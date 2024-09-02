@@ -1,0 +1,54 @@
+
+    ID INT PRIMARY KEY AUTO_Criar o Banco de Dados:
+
+CRIAR BANCO DE DADOS LOJA;
+USAR LOJA;
+
+Tabela PRODUTO:
+
+CRIAR TABELA PRODUTO (
+    ID INT CHAVE PRIMÁRIA INCREMENTO_AUTO,
+    nome VARCHAR(100),
+    descrição VARCHAR(255),
+    preço DECIMAL(10, 2)
+);
+
+Tabela ESTÓQUEI:
+
+CRIAR TABELA ESTOQUE (INCREMENTO,
+    produto_id INT,
+    quantidade INT,
+    CHAVE ESTRANGEIRA (produto_id) REFERÊNCIAS PRODUTO(ID)
+);
+
+Insira dados nas tabelas:
+
+INSERT INTO PRODUTO (nome, descrição, preço) VALORES 
+('Caderno', 'Caderno de última geração', 3500,00),
+('Rato', 'Rato óptico sem fio', 150,00);
+
+INSERT INTO ESTOQUE (produto_id, quantidade) VALORES 
+(1, 10),
+(2, 50);
+
+CREATE TRIGGER VerificarPreçoAntesInsercao
+ANTES DE INSERIR NO PRODUTO
+PARA CADA LINHA
+COMEÇAR
+    SE NOVO.preco <= 0 ENTÃO
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'O preço do produto deve ser maior que zero.';
+    FIM SE;
+FIM;
+
+INSERT INTO PRODUTO (nome, descrição, preço) VALORES 
+('Teclado', 'Teclado mecânico', -100,00);
+
+SELECIONAR 
+    PRODUTO.nome, 
+    PRODUTO.descricao, 
+    PRODUTO.preco, 
+    ESTOQUE.quantidade 
+DE S
+    PRODUTO 
+JUNTAR 
+    ESTOQUE ON PRODUTO.ID = ESTOQUE.produto_id;
